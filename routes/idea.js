@@ -8,15 +8,19 @@ router.get('/Add', isAuth, (req, res) => {
 })
 
 router.get('/edit/:id', isAuth, (req, res) => {
+    
     Ideas.findById(req.params.id)
         .then(idea => {
-            console.log(idea)
+            console.log(req.user._id +"seconds"+ idea.user)
+            if (req.user._id.toString() !== idea.user.toString()) {
+                return res.redirect('/ideas')
+            }else{
             res.render('ideas/edit',
                 {
                     title: idea.title,
                     details: idea.details,
                     id: idea._id
-                })
+            })}
         }).catch(err => console.log(err))
 
 })
@@ -65,29 +69,33 @@ router.post('/', isAuth, (req, res) => {
 router.delete('/:id', isAuth, (req, res) => {
     Ideas.findById(req.params.id)
         .then(idea => {
-            if (req.user.id !== idea.user)
-                redirect('/ideas')
-        })
+            if (req.user._id.toString() !== idea.user.toString()) {
+                return res.redirect('/ideas')
+        }else{
     Ideas.findByIdAndRemove(req.params.id)
         .then(() => {
             req.flash('success_msg', "deleted successfully")
             res.redirect('/ideas')
-        }).catch(err => console.log(err))
-})
+        })}
+    }).catch(err => console.log(err))
+}
+)
+
 
 router.put('/:id', isAuth, (req, res) => {
     Ideas.findById(req.params.id)
         .then(idea => {
-            if (req.user.id !== idea.user) {
-               res.redirect('/ideas')
-            }
+          //  console.log(req.user._id +"the second one"+ idea.user)
+          if (req.user._id.toString() !== idea.user.toString()) {
+            return res.redirect('/ideas')
+            }else{
             idea.title = req.body.title;
             idea.details = req.body.details;
             idea.save()
                 .then(() => {
                     req.flash('success_msg', "edited successfully")
-                    res.redirect('/ideas')
-                }).catch(err => console.log(err))
+                })}       res.redirect('/ideas')
+            }).catch(err => console.log(err))
         })
-})
+
 module.exports = router
