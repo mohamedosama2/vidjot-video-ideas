@@ -1,0 +1,16 @@
+{{#each ideas as |p|}}
+{{#each p}}
+{{#if title}}
+
+<div class="card card-body mb-2">
+    <h4>{{title}}</h4>
+    <p>{{details}}</p>
+    <a href="/ideas/edit/{{_id}}" class="btn btn-dark btn-block">edit </a>
+    <form action="/ideas/{{_id}}?_method=DELETE" method="POST">
+     <input type="hidden" name="_method" value="DELETE">
+     <input type="submit" class="btn btn-danger btn-block" value="DELETE">
+    </form>
+</div>
+{{/if}}
+{{/each}}
+{{/each}}
