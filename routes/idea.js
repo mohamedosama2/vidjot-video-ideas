@@ -26,7 +26,7 @@ router.get('/edit/:id', isAuth, (req, res) => {
 })
 
 router.get('/', isAuth, (req, res) => {
-    Ideas.find()
+    Ideas.find({user:req.user._id})
         .sort({ date: 'desc' })
         .then(ideas => {
             res.render('ideas/index', {
@@ -85,7 +85,6 @@ router.delete('/:id', isAuth, (req, res) => {
 router.put('/:id', isAuth, (req, res) => {
     Ideas.findById(req.params.id)
         .then(idea => {
-          //  console.log(req.user._id +"the second one"+ idea.user)
           if (req.user._id.toString() !== idea.user.toString()) {
             return res.redirect('/ideas')
             }else{
